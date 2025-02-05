@@ -8,19 +8,16 @@
     - role
   
   * Product
+    - userId
     - name
     - quantity
     - isAvailable
-
-  * Sale
-    - User
-    - created
-    - updated
     
-    * Item
-      - product
-      - price
-      - quantity
+  * Sale
+    - userId
+    - product [foreinkey]
+    - price
+    - quantity
 
-  * ExchangeRate
-   - dollar
+  * Exchange
+   - price
