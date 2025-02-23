@@ -9,11 +9,12 @@ export const loginUser = async (req: Request, res: Response): Promise<any> => {
         const getUser = await db.User.findOne({
             where: { username: username },
         })
-        const user = getUser.toJSON();
+
         let data;
-        if (!user) {
+        if (!getUser) {
             return res.sendStatus(400)
         }
+        const user = getUser.toJSON();
         let passwordHash = null
         if (user.salt) {
             passwordHash = authentication(user.salt, password)
@@ -46,6 +47,9 @@ export const getProfile = async (req: Request, res: Response): Promise<any> => {
         const sessionToken = req.cookies["AUTH-COOKIE"]
         if (sessionToken) {
             const getUser = await db.User.findOne({ where: { sessionToken: sessionToken } })
+            if (!getUser) {
+                return res.status(400).send({ message: "This user does not exist" })
+            }
             const user = getUser.toJSON()
             delete user.password
             delete user.sessionToken
@@ -71,18 +75,11 @@ export const signUp = async (req: Request, res: Response): Promise<any> => {
 
     try {
         const { username, password, role } = req.body
-        if (!username || !password) {
-
-            console.log("here?")
-            return res.sendStatus(400)
-        }
-
-        console.log("in signup")
         const user = await db.User.findOne({
             where: { username },
         });
         if (user) {
-            return res.json({ "message": "Already have an account? Login" })
+            return res.status(403).json({ "message": "Already have an account? Login" })
         }
 
         const salt = random();
@@ -98,33 +95,7 @@ export const signUp = async (req: Request, res: Response): Promise<any> => {
         return res.status(200).json(newUser).end();
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.sendStatus(400)
     }
 }
-
-// export const updateUser = async (req: Request, res: Response): Promise<any> => {
-//     try {
-//         const { userId } = req.params
-//         const { role } = req.body
-//         if (!userId) {
-//             return res.status(400).send({ "message": "query param missing user id" })
-//         }
-//         const [updatedRowsCount] = await db.User.update(
-//             {
-//                 role: role
-//             },
-//             {
-//                 where: { id: userId },
-//             }
-//         );
-//         if (updatedRowsCount === 0) {
-//             console.log('No user found with the given ID.');
-//         } else {
-//             console.log('User updated successfully.');
-//         }
-//     } catch (error) {
-//         console.log(error)
-//         return res.sendStatus(500)
-//     }
-// }

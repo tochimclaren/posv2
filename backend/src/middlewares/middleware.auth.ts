@@ -25,7 +25,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
         lodash.merge(req, { identity: user })
         next()
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.sendStatus(400)
     }
 }

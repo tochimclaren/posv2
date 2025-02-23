@@ -5,28 +5,21 @@ import db from "../../models";
 import { paginateProduct } from "../utilities/pagination"
 
 
-
-
 export const getProduct = async (req: Request, res: Response): Promise<any> => {
     try {
         const { id } = req.params
-        if (!id) {
-            return res.status(403).json({
-                message: "Missing product id parameter"
-            })
-        }
         const product = await db.Product.findOne({
             where: { id: id }
         })
         if (product) {
-            return res.json(product)
+            return res.status(200).json(product)
         }
         else {
             return res.sendStatus(404)
         }
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         res.sendStatus(500)
     }
 }
@@ -35,17 +28,14 @@ export const listProduct = async (req: Request, res: Response): Promise<any> => 
     try {
         const page: number = parseInt(req.query.page as string) || 1;
         const pageSize: number = parseInt(req.query.pageSize as string) || 10;
-
         const products = await paginateProduct(page, pageSize)
-
         return res.json(products)
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.sendStatus(500)
     }
 }
-
 
 
 export const createProduct = async (req: AuthRequest, res: Response): Promise<any> => {
@@ -83,24 +73,31 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<an
 
 export const updateProduct = async (req: Request, res: Response): Promise<any> => {
     try {
-        const { id } = req.params
-        const { name, price, isAvailable } = req.body
+        const { id } = req.params;
+        const { name, price, isAvailable } = req.body;
+
         if (!id) {
-            return res.sendStatus(400).json({ message: "missing product id in params" })
+            return res.status(400).json({ message: "Missing product ID in params" });
         }
         if (!name || !price) {
-            return res.sendStatus(400).json({ message: "missing attributes" })
+            return res.status(400).json({ message: "Missing attributes" });
         }
-        const [product] = await db.Product.update({ name, price, isAvailable }, { where: { id: id } });
 
-        console.log(product)
-        return res.status(200).json(product)
+        const product = await db.Product.findByPk({ where: { id } });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        await product.update({ name, price, isAvailable });
+
+        return res.status(200).json(product);
 
     } catch (error) {
-        console.log(error)
-        return res.sendStatus(500)
+        console.log(error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
+
 
 export const deleteProduct = async (req: Request, res: Response): Promise<any> => {
     try {

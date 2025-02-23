@@ -3,10 +3,7 @@ import db from "../../models"
 import { AuthRequest } from "../types/express"
 
 
-
 export const createSale = async (req: AuthRequest, res: Response): Promise<any> => {
-    console.log("here")
-
     try {
         const user = await db.User.findOne({
             where: {
@@ -46,41 +43,16 @@ export const getSale = async (req: Request, res: Response): Promise<any> => {
         return res.json(sale)
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.sendStatus(500)
     }
 }
-// export const listSale = async (req: Request, res: Response): Promise<any> => {
-//     // TODO: add pagination
-//     console.log("hit")
-//     try {
-//         const sale = await db.Sale.findAll({
-//             include: [
-//                 {
-//                     model: db.Product,
-//                     as: 'product',  // Use alias here
-//                     attributes: ['name']
-//                 },
-//                 {
-//                     model: db.User,
-//                     as: 'user',  // Use alias here
-//                     attributes: ['username']
-//                 }
-//             ]
-//         });
-//         return res.json(sale)
-//     } catch (error) {
-//         console.log(error)
-//         return res.sendStatus(500)
-//     }
-// }
 
 export const listSale = async (req: Request, res: Response): Promise<any> => {
-    console.log("hit");
     try {
         // Extract page and pageSize (limit) from query parameters, with default values
-        const page = parseInt(req.query.page as string) || 1; // Default to page 1 if not provided
-        const pageSize = parseInt(req.query.pageSize as string) || 10; // Default to 10 items per page
+        const page = parseInt(req.query.page as string) || 1;
+        const pageSize = parseInt(req.query.pageSize as string) || 10;
 
         // Calculate offset based on current page and pageSize
         const offset = (page - 1) * pageSize;
@@ -113,7 +85,7 @@ export const listSale = async (req: Request, res: Response): Promise<any> => {
         });
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.sendStatus(500);
     }
 };
@@ -130,7 +102,7 @@ export const deleteSale = async (req: Request, res: Response): Promise<any> => {
         return res.json({ message: "Sale deleted" })
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.sendStatus(500)
     }
 }

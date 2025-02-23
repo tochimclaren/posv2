@@ -6,4 +6,6 @@ module.exports = {
     '^.+\\.ts$': 'ts-jest',
   },
   testMatch: ['**/tests/**/*.test.ts', '**/?(*.)+(spec|test).ts'],
+  verbose:true,
+  forceExit:true
 };

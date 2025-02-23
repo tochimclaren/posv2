@@ -6,10 +6,11 @@ import { isAuthenticated } from "../middlewares/middleware.auth"
 
 const router = Router()
 
-router.post("/products", isAuthenticated, objectValidation(productSchema), createProduct)
-router.put("/products/:id/update", isAuthenticated, objectValidation(productSchema), updateProduct)
-router.delete("/products/:id", isAuthenticated, deleteProduct)
 router.get("/products/search", searchProduct)
 router.get("/products/:id", getProduct)
 router.get("/products", listProduct)
+router.post("/products", isAuthenticated, objectValidation(productSchema), createProduct)
+router.put("/products/:id", isAuthenticated, objectValidation(productSchema), updateProduct)
+router.delete("/products/:id", isAuthenticated, deleteProduct)
+
 export default router
