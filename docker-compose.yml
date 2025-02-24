@@ -16,6 +16,8 @@ services:
     networks:
       - app-network
 
+    command: ["npm", "run", "dev", "--", "--host"]
+
   backend:
     build:
       context: ./backend
@@ -54,7 +56,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p(098JhhGFUI%%"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p(098JhhGFUI%%" ]
       interval: 10s
       timeout: 5s
       retries: 5
