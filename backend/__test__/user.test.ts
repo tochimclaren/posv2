@@ -354,8 +354,6 @@ describe('Get Profile Controller', () => {
   beforeEach(() => {
 
     app.get('/api/profile', getProfile);
-
-    // Clear all mocks before each test
     jest.clearAllMocks();
   });
 
@@ -364,7 +362,6 @@ describe('Get Profile Controller', () => {
   });
 
   it('should return user profile when valid session token is provided', async () => {
-    // Arrange
     const mockDbResponse = mockUser;
     (db.User.findOne as jest.Mock).mockResolvedValue(mockDbResponse);
 
@@ -374,12 +371,10 @@ describe('Get Profile Controller', () => {
       name: 'Test User'
     };
 
-    // Act
     const response = await request(app)
       .get('/api/profile')
       .set('Cookie', ['AUTH-COOKIE=valid-session-token']);
 
-    // Assert
     expect(response.status).toBe(200);
     expect(response.body).toEqual(expectedResponse);
     expect(response.body).not.toHaveProperty('password');
@@ -391,15 +386,12 @@ describe('Get Profile Controller', () => {
   });
 
   it('should return 400 when user not found with session token', async () => {
-    // Arrange
     (db.User.findOne as jest.Mock).mockResolvedValue(null);
 
-    // Act
     const response = await request(app)
       .get('/api/profile')
       .set('Cookie', ['AUTH-COOKIE=invalid-session-token']);
 
-    // Assert
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: 'This user does not exist' });
     expect(db.User.findOne).toHaveBeenCalledWith({
@@ -408,18 +400,15 @@ describe('Get Profile Controller', () => {
   });
 
   it('should return 403 when no session token provided', async () => {
-    // Act
     const response = await request(app)
       .get('/api/profile');
 
-    // Assert
     expect(response.status).toBe(403);
     expect(response.body).toEqual({ message: 'Endpoint requires authentication' });
     expect(db.User.findOne).not.toHaveBeenCalled();
   });
 
   it('should return 500 when database error occurs', async () => {
-    // Create an error that matches what express will serialize
     const mockError = {
       name: 'DatabaseError',
       message: 'Database error',
@@ -433,7 +422,6 @@ describe('Get Profile Controller', () => {
       .set('Cookie', ['AUTH-COOKIE=valid-session-token']);
 
     expect(response.status).toBe(500);
-    // Only check that we get a non-empty error object
     expect(response.body).toBeDefined();
     expect(Object.keys(response.body).length).toBeGreaterThan(0);
   });

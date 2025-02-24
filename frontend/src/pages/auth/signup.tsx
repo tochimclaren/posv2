@@ -4,8 +4,6 @@ import { useNavigate } from "react-router"
 import { toast } from 'sonner';
 
 
-
-
 function signup() {
   const [error, setError] = useState<any>("")
   const [password, setPassword] = useState<string>("")

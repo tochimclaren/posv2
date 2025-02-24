@@ -10,6 +10,7 @@ services:
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - VITE_API_URL=http://localhost:4000
     depends_on:
       - backend
     networks:
@@ -28,12 +29,13 @@ services:
       - DB_USER=pos_user
       - DB_NAME=pos
       - DB_PASS=(098JhhGFUI%%
-      - DB_HOST=127.0.0.1
+      - DB_HOST=mysql
       - DIALECT=mysql
       - PORT=4000
       - TASK_INTERVAL=30000
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -41,14 +43,21 @@ services:
     image: mysql:8
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
+      - MYSQL_ROOT_PASSWORD=(098JhhGFUI%%
+      - MYSQL_DATABASE=pos
+      - MYSQL_USER=pos_user
+      - MYSQL_PASSWORD=(098JhhGFUI%%
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p(098JhhGFUI%%"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   app-network:

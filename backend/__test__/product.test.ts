@@ -2,7 +2,6 @@ import { Server } from 'http';
 import request from 'supertest';
 import db from '../models';
 import { startServer, stopServer, app } from '../index';
-// import { v4 as uuidv4 } from 'uuid';
 
 let server: Server;
 let testProduct: any;
